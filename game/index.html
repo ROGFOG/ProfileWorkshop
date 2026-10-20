@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#232423">
-  <meta name="description" content="A small circuit puzzle. Rotate the tiles and carry a signal from the source to the receiver.">
+  <meta name="description" content="Connect prepared circuits or play a growing endless run. Rotate tiles, earn points and expand the field.">
   <title>Signal Route | Profile Workshop</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="app.mjs"></script>
@@ -17,29 +17,32 @@
     </header>
     <main>
       <section class="intro" aria-labelledby="game-title">
-        <p class="eyebrow"><span aria-hidden="true" class="status-dot"></span> SIGNAL ROUTE / 4 CIRCUITS</p>
+        <p class="eyebrow"><span aria-hidden="true" class="status-dot"></span> <span id="mode-label">SIGNAL ROUTE / CLASSIC</span></p>
         <h1 id="game-title">Signal<span>Route</span><span class="title-period">.</span></h1>
-        <p class="lede">Turn the tiles. Connect the source to the receiver.</p>
+        <p id="mode-description" class="lede">Four prepared circuits. Turn the tiles and connect both edges.</p>
       </section>
+      <div class="mode-switch" role="group" aria-label="Game mode"><button id="classic-mode" type="button" aria-pressed="true">Classic <span>04 circuits</span></button><button id="endless-mode" type="button" aria-pressed="false">Endless <span>grow + score</span></button></div>
       <div class="game-layout">
         <section class="play-panel" aria-label="Circuit puzzle">
           <div class="panel-top"><span id="level-name">Loading circuit</span><span class="mono" id="level-number">01 / 04</span></div>
           <div class="board-surround">
             <div class="edge-label source-label"><span>SOURCE</span><i aria-hidden="true"></i></div>
-            <div id="board" class="board" role="group" aria-label="Rotate circuit tiles"></div>
+            <div id="board-viewport" class="board-viewport" tabindex="0" aria-label="Circuit map. Scroll to explore larger fields."><div id="board" class="board" role="group" aria-label="Rotate circuit tiles"></div></div>
             <div class="edge-label receiver-label"><i aria-hidden="true"></i><span>RECEIVER</span></div>
           </div>
+          <div id="board-tools" class="board-tools" hidden><div><button id="zoom-out" type="button" aria-label="Zoom out">−</button><span id="zoom-label">100%</span><button id="zoom-in" type="button" aria-label="Zoom in">+</button></div><button id="jump-source" type="button">Source</button><button id="jump-receiver" type="button">Receiver</button></div>
           <div class="board-footer"><span><i class="legend-dot" aria-hidden="true"></i> live signal</span><span>click or tap to rotate <span aria-hidden="true">↻</span></span></div>
         </section>
         <aside class="control-panel" aria-label="Game controls">
           <div class="readout"><p class="eyebrow">TRANSMISSION STATUS</p><p id="status-title" class="status-title">Awaiting connection</p><p id="level-note" class="muted"></p></div>
+          <div id="score-panel" class="score-panel" hidden><div><span class="eyebrow">RUN SCORE</span><strong id="score">0</strong></div><div><strong id="cleared">0</strong><span class="eyebrow">CLEARED</span></div></div>
           <div class="stats"><div><span id="moves">0</span><p>TURNS</p></div><div><span id="powered">0</span><p>TILES LIVE</p></div></div>
           <div class="controls"><button id="next" class="primary-button" type="button" disabled>Next circuit <span aria-hidden="true">↗</span></button><button id="reset" class="secondary-button" type="button">Reset circuit <span aria-hidden="true">↺</span></button><button id="run-summary" class="secondary-button" type="button" hidden>Run summary</button></div>
-          <div class="circuit-list"><p class="eyebrow">CHOOSE A CIRCUIT</p><div id="level-picker" class="level-picker" aria-label="Choose a level"></div></div>
+          <div id="classic-picker" class="circuit-list"><p class="eyebrow">CHOOSE A CIRCUIT</p><div id="level-picker" class="level-picker" aria-label="Choose a level"></div></div>
           <details class="instructions"><summary>How to play</summary><p>Rotate each tile clockwise until the signal reaches the receiver. Only touching, matching ends connect.</p><p>Use Tab to focus a tile, arrow keys to move around the board, and Enter or Space to rotate it. Reset starts the current circuit again.</p><p>Your progress lasts for this visit only. No account, tracking, or saved data.</p></details>
         </aside>
       </div>
-      <p class="bottom-note">Four circuits. Your progress lasts for this visit.</p>
+      <p id="bottom-note" class="bottom-note">Four circuits. Your progress lasts for this visit.</p>
       <p class="sr-only" id="announcement" role="status" aria-live="polite" aria-atomic="true"></p>
       <noscript><p class="no-script">Enable JavaScript to play. This puzzle runs entirely in your browser.</p></noscript>
     </main>
@@ -47,11 +50,11 @@
   </div>
   <dialog id="finale" class="finale" aria-labelledby="final-title" aria-describedby="final-description">
     <div class="final-route" aria-hidden="true"><i></i><span></span><i></i><span></span><i></i><span></span><i></i></div>
-    <p class="eyebrow">TRANSMISSION COMPLETE</p>
+    <p id="final-eyebrow" class="eyebrow">TRANSMISSION COMPLETE</p>
     <h2 id="final-title">All circuits<br>connected.</h2>
     <p id="final-description">Every receiver has a signal. All four circuits are complete.</p>
-    <div class="final-stats"><div><strong id="final-count">4 / 4</strong><span>CIRCUITS</span></div><div><strong id="final-turns">0</strong><span>TOTAL TURNS</span></div></div>
-    <p class="final-note">Your best completed attempt on each circuit, this visit.</p>
+    <div class="final-stats"><div><strong id="final-count">4 / 4</strong><span>CIRCUITS</span></div><div><strong id="final-turns">0</strong><span>TOTAL TURNS</span></div><div id="final-score-stat" hidden><strong id="final-score">0</strong><span>POINTS</span></div></div>
+    <p id="final-note" class="final-note">Your best completed attempt on each circuit, this visit.</p>
     <div class="final-actions"><button id="play-again" class="primary-button" type="button" autofocus>Play again <span aria-hidden="true">↻</span></button><button id="review-circuits" class="secondary-button" type="button">Keep exploring</button></div>
     <a class="final-back" href="../index.html">Back to the workshop <span aria-hidden="true">↗</span></a>
   </dialog>

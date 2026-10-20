@@ -9,7 +9,8 @@ export const SITE_FILES = [
   'how-it-works.html', 'LICENSE', 'THIRD_PARTY_NOTICES.md',
   'assets/header-signal.svg', 'assets/signal-preview.svg',
   'assets/policylens-preview.svg', 'assets/filesentinel-preview.svg', 'assets/repocards-preview.svg',
-  'game/index.html', 'game/style.css', 'game/app.mjs', 'game/logic.mjs', 'game/progress.mjs', 'game/README.md',
+  'game/index.html', 'game/style.css', 'game/app.mjs', 'game/logic.mjs', 'game/levels.mjs',
+  'game/progress.mjs', 'game/endless.mjs', 'game/viewport.mjs', 'game/README.md',
   'profile/README.md', 'profile/assets/header-signal.svg', 'profile/assets/signal-preview.svg',
   'profile/assets/policylens-preview.svg', 'profile/assets/filesentinel-preview.svg', 'profile/assets/repocards-preview.svg',
 ];

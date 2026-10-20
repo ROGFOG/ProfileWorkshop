@@ -1,4 +1,5 @@
 /** Pure, dependency-free Signal Route rules. N=1, E=2, S=4, W=8. */
+import { CLASSIC_LEVELS } from './levels.mjs';
 export const N = 1, E = 2, S = 4, W = 8;
 export const DIRECTIONS = Object.freeze([
   { bit: N, opposite: S, dr: -1, dc: 0, name: 'north' },
@@ -15,12 +16,22 @@ export function rotate(mask, turns = 1) {
   return result;
 }
 
-const specs = [
-  { name: 'First contact', size: 4, note: 'Connect the source on the left to the receiver on the right.', path: [[1,0],[1,1],[0,1],[0,2],[1,2],[2,2],[2,3]] },
-  { name: 'The long way', size: 5, note: 'The route turns back toward the top of the board.', path: [[3,0],[3,1],[2,1],[1,1],[1,2],[1,3],[2,3],[3,3],[3,4]] },
-  { name: 'Switchback', size: 5, note: 'Look for the vertical connections between the corners.', path: [[0,0],[1,0],[2,0],[2,1],[2,2],[1,2],[0,2],[0,3],[0,4],[1,4],[2,4]] },
-  { name: 'Across the network', size: 6, note: 'Connect both edges across the larger board.', path: [[4,0],[4,1],[4,2],[3,2],[2,2],[2,1],[1,1],[0,1],[0,2],[0,3],[1,3],[2,3],[2,4],[3,4],[4,4],[4,5]] },
-];
+const specs = CLASSIC_LEVELS;
+
+export function validatePath(path, size) {
+  if (!Number.isInteger(size) || size < 2 || !Number.isSafeInteger(size * size)) throw new RangeError('Invalid board size.');
+  if (!Array.isArray(path) || path.length < 2) throw new RangeError('A route needs at least two cells.');
+  const seen = new Set();
+  path.forEach((point, index) => {
+    if (!Array.isArray(point) || point.length !== 2 || !point.every(value => Number.isInteger(value) && value >= 0 && value < size)) throw new RangeError('Route leaves the board.');
+    const key = point[0] * size + point[1];
+    if (seen.has(key)) throw new RangeError('Route repeats a cell.');
+    seen.add(key);
+    if (index && Math.abs(point[0] - path[index - 1][0]) + Math.abs(point[1] - path[index - 1][1]) !== 1) throw new RangeError('Route steps must share an edge.');
+  });
+  if (path[0][1] !== 0 || path.at(-1)[1] !== size - 1) throw new RangeError('Route must join the west and east edges.');
+  return true;
+}
 
 function directionBetween([r, c], [nr, nc]) {
   const direction = DIRECTIONS.find(({ dr, dc }) => r + dr === nr && c + dc === nc);
@@ -32,7 +43,12 @@ function directionBetween([r, c], [nr, nc]) {
 export function createLevel(index) {
   const spec = specs[index];
   if (!spec) throw new RangeError('Unknown level.');
+  return createLevelFromSpec(spec, index);
+}
+
+export function createLevelFromSpec(spec, index = 0) {
   const { size, path } = spec;
+  validatePath(path, size);
   const solution = Array.from({ length: size * size }, (_, i) => rotate(i % 3 === 0 ? N | S : N | E, (i + index) % 4));
   path.forEach((point, step) => {
     const previous = step === 0 ? [point[0], -1] : path[step - 1];
@@ -51,8 +67,9 @@ export const LEVEL_COUNT = specs.length;
 
 /** Signal crosses only reciprocal ports and starts at the external west source. */
 export function traceSignal(tiles, size, source, target) {
+  const at = typeof tiles === 'function' ? tiles : index => tiles[index];
   const powered = new Set();
-  if (!(tiles[source] & W)) return { powered, solved: false };
+  if (!(at(source) & W)) return { powered, solved: false };
   powered.add(source);
   const queue = [source];
   for (let cursor = 0; cursor < queue.length; cursor += 1) {
@@ -60,13 +77,13 @@ export function traceSignal(tiles, size, source, target) {
     const r = Math.floor(current / size), c = current % size;
     for (const { bit, opposite, dr, dc } of DIRECTIONS) {
       const nr = r + dr, nc = c + dc;
-      if (!(tiles[current] & bit) || nr < 0 || nr >= size || nc < 0 || nc >= size) continue;
+      if (!(at(current) & bit) || nr < 0 || nr >= size || nc < 0 || nc >= size) continue;
       const next = nr * size + nc;
-      if ((tiles[next] & opposite) && !powered.has(next)) {
+      if ((at(next) & opposite) && !powered.has(next)) {
         powered.add(next);
         queue.push(next);
       }
     }
   }
-  return { powered, solved: powered.has(target) && Boolean(tiles[target] & E) };
+  return { powered, solved: powered.has(target) && Boolean(at(target) & E) };
 }

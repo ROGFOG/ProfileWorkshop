@@ -19,12 +19,25 @@ the build notes. Stop the server with Ctrl+C.
 ## Signal Route
 
 Rotate tiles to connect the source on the left to the receiver on the right.
-Four circuits, keyboard controls and reduced motion support. Progress lasts for
+Four prepared classic circuits, a growing endless mode, keyboard controls and reduced motion support. Progress lasts for
 the current visit. There are no accounts, analytics or persistent browser storage.
 
-Complete all four distinct circuits to reach the final screen. It sums the best
+In Classic, complete all four distinct circuits to reach the final screen. It sums the best
 completed attempt on each circuit during the visit. Play again starts a fresh run;
 Keep exploring leaves the completed circuits available. There are no hints.
+
+Endless starts at 4 by 4. Every completed stage earns points and opens a field
+with one more row and column. The base award grows with stage and route length;
+a bounded efficiency bonus rewards fewer turns. Each stage pays once. Reset
+preserves the stage turn count, and completed stages cannot be played for more
+points. Switching modes keeps both runs during the visit. New run clears only
+the endless run. There is no persistent storage or online leaderboard.
+
+Larger boards support scrolling, zoom and endpoint navigation. Only cells near
+the visible window are rendered. Filler tiles are computed from coordinates and
+the run seed, so a large map does not require a full-grid tile array.
+
+Open `game/?mode=endless` to start directly in Endless.
 
 ![Signal Route preview](assets/signal-preview.svg)
 
@@ -41,7 +54,7 @@ python3 verify.py dist
 ```
 
 The tests check rotations, reciprocal connections, board boundaries, cycles and
-a reachable solution for every circuit. The profile check catches missing local
+a reachable solution for every circuit. Additional tests cover hundreds of seeded routes, growing fields, one-time scoring, the classic template and bounded viewport rendering. The profile check catches missing local
 images and unresolved draft destinations. The Python standard-library check
 verifies local HTML targets, anchors and SVG accessibility text. It does not
 check remote availability or replace browser interaction testing.
@@ -83,7 +96,7 @@ It does not require a custom domain, paid API or third-party hosting account.
 
 [Build notes](how-it-works.html) explain SVG edits and README setup.
 [Game source notes](game/README.md) describe the bitmask format and level paths.
-Rule logic is separate from the UI in `game/logic.mjs`.
+Rule logic is separate from the UI in `game/logic.mjs`. Prepared levels and a validated editable template live in `game/levels.mjs`; procedural routes and scoring live in `game/endless.mjs`.
 
 ## Open the game without a server
 
