@@ -1,0 +1,4 @@
+dist/
+game/offline.html
+__pycache__/
+*.log
