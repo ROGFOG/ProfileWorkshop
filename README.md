@@ -1,128 +1,86 @@
 # Profile Workshop
 
-An editable GitHub profile header, a circuit puzzle and a guide to connecting them.
-Charcoal, warm lettering and an orange patch panel.
+Source for the ROGFOG profile artwork and Signal Route, a browser circuit puzzle.
+The profile links to the game through an SVG preview because README files cannot
+run the game's JavaScript.
 
-![ROGFOG header](assets/header-signal.svg)
+[Play Signal Route](https://rogfog.github.io/ProfileWorkshop/game/) ·
+[Browse the workshop](https://rogfog.github.io/ProfileWorkshop/)
 
-## Run
+![Signal Route](assets/signal-preview.svg)
 
-Requires Node.js 24+. No dependency installation is needed.
+## The game
+
+Rotate tiles to connect the left source to the right receiver. Classic contains
+four prepared circuits and a final turn summary. Endless starts at 4 × 4 and adds
+one row and column after each completed stage. Each stage awards points once;
+reset keeps turns already spent. Switching modes preserves both runs for the
+current visit. Reloading clears progress.
+
+Large boards use a scrollable view with zoom and Source/Receiver navigation.
+Only nearby cells are rendered. A seed reproduces the route, while filler tiles
+are computed as needed. There are no hints, accounts or saved scores.
+
+## Run and check
+
+Node.js 24+; no package installation:
 
 ```sh
 npm start
 ```
 
-Open the printed local URL. The workshop links to the profile study, the game and
-the build notes. Stop the server with Ctrl+C.
-
-## Signal Route
-
-Rotate tiles to connect the source on the left to the receiver on the right.
-Four prepared classic circuits, a growing endless mode, keyboard controls and reduced motion support. Progress lasts for
-the current visit. There are no accounts, analytics or persistent browser storage.
-
-In Classic, complete all four distinct circuits to reach the final screen. It sums the best
-completed attempt on each circuit during the visit. Play again starts a fresh run;
-Keep exploring leaves the completed circuits available. There are no hints.
-
-Endless starts at 4 by 4. Every completed stage earns points and opens a field
-with one more row and column. The base award grows with stage and route length;
-a bounded efficiency bonus rewards fewer turns. Each stage pays once. Reset
-preserves the stage turn count, and completed stages cannot be played for more
-points. Switching modes keeps both runs during the visit. New run clears only
-the endless run. There is no persistent storage or online leaderboard.
-
-Larger boards support scrolling, zoom and endpoint navigation. Only cells near
-the visible window are rendered. Filler tiles are computed from coordinates and
-the run seed, so a large map does not require a full-grid tile array.
-
-Open `game/?mode=endless` to start directly in Endless.
-
-![Signal Route preview](assets/signal-preview.svg)
-
-The game runs on its own page. A profile README contains a linked preview image
-because GitHub does not run arbitrary page JavaScript in README files.
-
-## Check and build
+Open http://127.0.0.1:4178. Stop the server with Ctrl+C.
 
 ```sh
 npm test
 npm run check
 npm run build
-python3 verify.py dist
+python verify.py dist
 ```
 
-The tests check rotations, reciprocal connections, board boundaries, cycles and
-a reachable solution for every circuit. Additional tests cover hundreds of seeded routes, growing fields, one-time scoring, the classic template and bounded viewport rendering. The profile check catches missing local
-images and unresolved draft destinations. The Python standard-library check
-verifies local HTML targets, anchors and SVG accessibility text. It does not
-check remote availability or replace browser interaction testing.
+On systems where Python is named `python3`, use that command for the last step.
+The build copies an explicit list of site files to `dist/`; Pages deploys this
+folder. `serve.mjs` provides the local HTTP preview. `verify.py` checks HTML links,
+anchors and SVG title/description elements and runs in both CI and Pages builds.
 
-`npm run build` copies an explicit list of site files to `dist/`. Only this
-directory is uploaded to Pages. It contains no workflows, checkpoints or tests.
+Checked on Windows with Node.js 24.14.0 and Python 3.12.14: 24 game tests, script
+and profile checks, static build and local-reference verification. The tests
+include 480 seed/size combinations, scoring, receiver connections and viewport
+selection. Browser layout and touch interaction still need their own checks.
 
-## Use the profile
+## Source map
 
-1. Open [profile/README.md](profile/README.md). This example is configured for
-   `ROGFOG/ProfileWorkshop`. Change its public URLs if your destination differs.
-2. Copy its `README.md` and `assets/` into your profile repository, which must
-   match your GitHub username. Adjust the name, links and descriptions.
-3. Copy `profile/check.mjs` to `check.mjs`, and `profile/ci.yml` to
-   `.github/workflows/ci.yml` in the profile repository.
-4. Keep this project's MIT copyright and permission notice with redistributed
-   source or artwork. See [the license notes](THIRD_PARTY_NOTICES.md).
-5. Deploy the game first. Check its public URL, then update the profile.
-
-The HTML profile page is a layout study. GitHub supplies its own typography,
-spacing, sidebar and light/dark interface. The SVG artwork keeps its dark palette.
-No avatar or account settings need to be changed.
-
-## Publish on GitHub Pages
-
-The included CI workflow checks pushes and pull requests with read-only
-repository permissions. The Pages workflow builds and checks `main`, then uses a
-separate deployment job with Pages and identity-token write permissions.
-
-In the repository's **Settings > Pages > Build and deployment**, choose
-**GitHub Actions** as the source. Push the reviewed source to `main` or run the
-Pages workflow manually. Wait for a successful deployment and verify the URL
-reported by that run. A workflow file alone does not prove the site is live.
-
-The workflow follows the [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
-It does not require a custom domain, paid API or third-party hosting account.
-
-## Change the artwork or a circuit
-
-[Build notes](how-it-works.html) explain SVG edits and README setup.
-[Game source notes](game/README.md) describe the bitmask format and level paths.
-Rule logic is separate from the UI in `game/logic.mjs`. Prepared levels and a validated editable template live in `game/levels.mjs`; procedural routes and scoring live in `game/endless.mjs`.
-
-## Open the game without a server
-
-```sh
-npm run offline
-```
-
-This generates `game/offline.html` with inline CSS and JavaScript.
-Rebuild it after game changes. Direct opening from disk has not been verified
-in the browser used for this project. The HTTP version is the tested entry point.
-
-## Files
-
-| Path | Purpose |
+| File | Responsibility |
 | --- | --- |
-| `assets/` | Original SVG header and game preview |
-| `game/` | Playable game, pure rules and tests |
-| `profile/` | Markdown, images and CI files for the profile repository |
-| `signal.html`, `profile.js`, `profile.css` | HTML profile study |
-| `index.html`, `workshop.css`, `how-it-works.html` | Workshop and guide |
-| `build-site.mjs`, `verify.py` | Site packaging and local-reference checks |
-| `.github/workflows/` | CI and Pages deployment |
+| `game/logic.mjs`, `game/levels.mjs` | Rotation, reciprocal ports, classic circuits |
+| `game/endless.mjs` | Seeded route generation and points |
+| `game/progress.mjs` | Best completed classic attempts |
+| `game/viewport.mjs` | Visible cell selection |
+| `game/app.mjs` | Controls, board rendering and visit state |
+| `assets/` | SVG header and project previews |
+| `profile/` | Profile README, artwork and its CI check |
+| `signal.html`, `profile.js`, `profile.css` | HTML preview of the profile |
+| `build-site.mjs`, `verify.py` | Pages packaging and local link checks |
 
-## License
+[Game notes](game/README.md) describe the tile masks, level format and score
+formula. [Build notes](how-it-works.html) connect the artwork, profile and game.
+The current profile is [ROGFOG/ROGFOG](https://github.com/ROGFOG/ROGFOG).
 
-[MIT](LICENSE). Copyright 2026 ROGFOG. The game, layout and vector artwork are
-project materials. No third-party libraries, font files or artwork are bundled.
-Build tools call GitHub-maintained Actions, which remain in their own repositories.
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+## Known issues
+
+The game requires HTTP or HTTPS and a browser with ES module support. The old
+single-file offline export has been removed; the maintained entry point is
+`game/index.html`. Progress is held in memory. Browser scrolling, memory and
+numeric limits bound very large endless boards. The score bonus uses a known
+solving route; it does not calculate the shortest possible solution.
+
+## Publishing and reuse
+
+CI checks pull requests with read-only repository permissions. The Pages workflow
+builds main and deploys it in a separate job. The repository uses the GitHub
+Actions Pages source; [GitHub's setup guide](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+explains that configuration.
+
+The code and SVG artwork use [MIT](LICENSE). No third-party application code,
+fonts or artwork are bundled. Keep the full copyright and permission notice
+when redistributing these files.

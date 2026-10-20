@@ -6,7 +6,7 @@ const root = dirname(fileURLToPath(import.meta.url));
 // Publish this list only. Tests, workflows and local work files stay out of Pages.
 export const SITE_FILES = [
   'index.html', 'workshop.css', 'signal.html', 'profile.css', 'profile.js',
-  'how-it-works.html', 'LICENSE', 'THIRD_PARTY_NOTICES.md',
+  'how-it-works.html', 'LICENSE',
   'assets/header-signal.svg', 'assets/signal-preview.svg',
   'assets/policylens-preview.svg', 'assets/filesentinel-preview.svg', 'assets/repocards-preview.svg',
   'game/index.html', 'game/style.css', 'game/app.mjs', 'game/logic.mjs', 'game/levels.mjs',

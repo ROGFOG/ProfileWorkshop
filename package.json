@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node serve.mjs",
     "test": "node --test game/logic.test.mjs game/progress.test.mjs game/endless.test.mjs game/viewport.test.mjs",
-    "offline": "node build-offline.mjs",
     "check": "node --check profile.js && node --check game/app.mjs && node profile/check.mjs",
     "build": "node build-site.mjs"
   }
