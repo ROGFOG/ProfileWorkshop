@@ -40,7 +40,7 @@ Ports are a four-bit mask: north `1`, east `2`, south `4`, west `8`. For example
 
 `rotate(mask, turns = 1)` rotates ports clockwise. It accepts negative turns and wraps every four turns.
 
-`traceSignal(tilesOrGetter, size, source, target)` returns `{ powered: Set<number>, solved: boolean }`. A tile is reached only across matching opposite ports. The source must face west to receive the external signal. The receiver must be reachable and face east to win. Open ends stop the signal. They do not invalidate an otherwise connected path. The first argument can be a flat array or a function returning a mask by index. Indices are row-major, with index `row * size + column`.
+`traceSignal(tilesOrGetter, size, source, target)` returns `{ powered: Set<number>, solved: boolean }`. A tile is reached only across matching opposite ports. The source must face west to receive the external signal. The circuit is complete when the signal reaches the receiver through matching ports. The receiver does not need an external output. Open ends stop the signal. They do not invalidate an otherwise connected path. The first argument can be a flat array or a function returning a mask by index. Indices are row-major, with index `row * size + column`.
 
 `createLevel(index)` returns an independent level object:
 

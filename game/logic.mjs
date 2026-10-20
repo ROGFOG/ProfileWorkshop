@@ -85,5 +85,5 @@ export function traceSignal(tiles, size, source, target) {
       }
     }
   }
-  return { powered, solved: powered.has(target) && Boolean(at(target) & E) };
+  return { powered, solved: powered.has(target) };
 }
