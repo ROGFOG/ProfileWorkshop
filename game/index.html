@@ -34,7 +34,7 @@
         <aside class="control-panel" aria-label="Game controls">
           <div class="readout"><p class="eyebrow">TRANSMISSION STATUS</p><p id="status-title" class="status-title">Awaiting connection</p><p id="level-note" class="muted"></p></div>
           <div class="stats"><div><span id="moves">0</span><p>TURNS</p></div><div><span id="powered">0</span><p>TILES LIVE</p></div></div>
-          <div class="controls"><button id="next" class="primary-button" type="button" disabled>Next circuit <span aria-hidden="true">↗</span></button><button id="reset" class="secondary-button" type="button">Reset circuit <span aria-hidden="true">↺</span></button></div>
+          <div class="controls"><button id="next" class="primary-button" type="button" disabled>Next circuit <span aria-hidden="true">↗</span></button><button id="reset" class="secondary-button" type="button">Reset circuit <span aria-hidden="true">↺</span></button><button id="run-summary" class="secondary-button" type="button" hidden>Run summary</button></div>
           <div class="circuit-list"><p class="eyebrow">CHOOSE A CIRCUIT</p><div id="level-picker" class="level-picker" aria-label="Choose a level"></div></div>
           <details class="instructions"><summary>How to play</summary><p>Rotate each tile clockwise until the signal reaches the receiver. Only touching, matching ends connect.</p><p>Use Tab to focus a tile, arrow keys to move around the board, and Enter or Space to rotate it. Reset starts the current circuit again.</p><p>Your progress lasts for this visit only. No account, tracking, or saved data.</p></details>
         </aside>
@@ -43,7 +43,17 @@
       <p class="sr-only" id="announcement" role="status" aria-live="polite" aria-atomic="true"></p>
       <noscript><p class="no-script">Enable JavaScript to play. This puzzle runs entirely in your browser.</p></noscript>
     </main>
-    <footer><span>ROGFOG / PROFILE WORKSHOP</span><a href="./README.md">Source notes <span aria-hidden="true">↗</span></a></footer>
+    <footer><span>ROGFOG / PROFILE WORKSHOP</span><a href="../how-it-works.html#game">About the game <span aria-hidden="true">↗</span></a></footer>
   </div>
+  <dialog id="finale" class="finale" aria-labelledby="final-title" aria-describedby="final-description">
+    <div class="final-route" aria-hidden="true"><i></i><span></span><i></i><span></span><i></i><span></span><i></i></div>
+    <p class="eyebrow">TRANSMISSION COMPLETE</p>
+    <h2 id="final-title">All circuits<br>connected.</h2>
+    <p id="final-description">Every receiver has a signal. All four circuits are complete.</p>
+    <div class="final-stats"><div><strong id="final-count">4 / 4</strong><span>CIRCUITS</span></div><div><strong id="final-turns">0</strong><span>TOTAL TURNS</span></div></div>
+    <p class="final-note">Your best completed attempt on each circuit, this visit.</p>
+    <div class="final-actions"><button id="play-again" class="primary-button" type="button" autofocus>Play again <span aria-hidden="true">↻</span></button><button id="review-circuits" class="secondary-button" type="button">Keep exploring</button></div>
+    <a class="final-back" href="../index.html">Back to the workshop <span aria-hidden="true">↗</span></a>
+  </dialog>
 </body>
 </html>

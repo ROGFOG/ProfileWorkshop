@@ -59,6 +59,7 @@ To add a circuit, add an item to `specs` in `logic.mjs`. `path` must start in co
 - Focus stays on the current tile when the signal changes.
 - Live announcements report turns and completion. Tile labels describe row, column, ports, endpoints, and signal state.
 - Completed circuits remain marked during the current page visit. Reset affects the current board. Reload clears progress.
+- Complete every distinct circuit to open the final screen. Replaying one circuit cannot substitute for the others. Total turns use the best completed attempt on each circuit during the visit. Play again clears all circuit marks and starts a fresh run; Keep exploring preserves them. Escape closes the final screen. Run summary reopens it after completion.
 - The interface follows the operating system's reduced motion preference and includes a local toggle. No animation is needed to solve the game.
 
 ## License and verification

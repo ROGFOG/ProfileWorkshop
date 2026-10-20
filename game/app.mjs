@@ -1,4 +1,5 @@
 import { DIRECTIONS, rotate, traceSignal, createLevel, LEVEL_COUNT } from './logic.mjs';
+import { createProgress } from './progress.mjs';
 
 const $ = selector => document.querySelector(selector);
 const board = $('#board');
@@ -8,7 +9,27 @@ let current = createLevel(0);
 let tiles = [...current.tiles];
 let moves = 0;
 let solved = false;
-const completed = new Set();
+const progress = createProgress(LEVEL_COUNT);
+
+function showFinale() {
+  const summary = progress.summary();
+  $('#final-count').textContent = `${summary.completed} / ${summary.total}`;
+  $('#final-turns').textContent = summary.turns;
+  $('#final-description').textContent = `Every receiver has a signal. All ${summary.total} circuits are complete.`;
+  if (!$('#finale').open) $('#finale').showModal();
+}
+
+$('#play-again').addEventListener('click', () => {
+  $('#finale').close();
+  progress.reset();
+  loadLevel(0);
+  board.children[current.source].focus();
+});
+$('#review-circuits').addEventListener('click', () => {
+  $('#finale').close();
+  $('#next').focus();
+});
+$('#run-summary').addEventListener('click', showFinale);
 
 if (new URLSearchParams(window.location.search).get('theme') === 'paper') {
   document.documentElement.dataset.theme = 'paper';
@@ -42,9 +63,9 @@ function renderPicker() {
     const button = document.createElement('button');
     button.type = 'button';
     button.textContent = String(index + 1).padStart(2, '0');
-    button.setAttribute('aria-label', `${createLevel(index).name}${completed.has(index) ? ', completed' : ''}`);
+    button.setAttribute('aria-label', `${createLevel(index).name}${progress.has(index) ? ', completed' : ''}`);
     if (index === current.id) button.setAttribute('aria-current', 'step');
-    if (completed.has(index)) button.classList.add('completed');
+    if (progress.has(index)) button.classList.add('completed');
     button.addEventListener('click', () => loadLevel(index));
     picker.append(button);
   }
@@ -70,8 +91,12 @@ function renderSignal(announce = false) {
   $('#level-note').textContent = solved ? `Signal delivered in ${moves} ${moves === 1 ? 'turn' : 'turns'}. ${current.id === LEVEL_COUNT - 1 ? 'Final circuit complete. Explore any circuit again.' : 'Your next circuit is ready.'}` : current.note;
   $('#next').disabled = !solved;
   $('#next').innerHTML = current.id === LEVEL_COUNT - 1 ? 'Back to first circuit <span aria-hidden="true">↗</span>' : 'Next circuit <span aria-hidden="true">↗</span>';
-  if (justSolved) { completed.add(current.id); renderPicker(); }
+  let finishedRun = false;
+  if (justSolved) { finishedRun = progress.record(current.id, moves); renderPicker(); }
+  $('#run-summary').hidden = !progress.summary().complete;
+  if (solved && progress.summary().complete) $('#level-note').textContent = `Signal delivered in ${moves} turns. All circuits complete. Your run summary is available below.`;
   if (announce) $('#announcement').textContent = solved ? `Connection established. Circuit ${current.id + 1} complete in ${moves} turns.` : `Turn ${moves}. ${result.powered.size} tiles live.`;
+  if (finishedRun) showFinale();
 }
 
 function rotateTile(index) {

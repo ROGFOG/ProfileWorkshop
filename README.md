@@ -22,6 +22,10 @@ Rotate tiles to connect the source on the left to the receiver on the right.
 Four circuits, keyboard controls and reduced motion support. Progress lasts for
 the current visit. There are no accounts, analytics or persistent browser storage.
 
+Complete all four distinct circuits to reach the final screen. It sums the best
+completed attempt on each circuit during the visit. Play again starts a fresh run;
+Keep exploring leaves the completed circuits available. There are no hints.
+
 ![Signal Route preview](assets/signal-preview.svg)
 
 The game runs on its own page. A profile README contains a linked preview image

@@ -8,8 +8,10 @@ export const SITE_FILES = [
   'index.html', 'workshop.css', 'signal.html', 'profile.css', 'profile.js',
   'how-it-works.html', 'LICENSE', 'THIRD_PARTY_NOTICES.md',
   'assets/header-signal.svg', 'assets/signal-preview.svg',
-  'game/index.html', 'game/style.css', 'game/app.mjs', 'game/logic.mjs', 'game/README.md',
+  'assets/policylens-preview.svg', 'assets/filesentinel-preview.svg', 'assets/repocards-preview.svg',
+  'game/index.html', 'game/style.css', 'game/app.mjs', 'game/logic.mjs', 'game/progress.mjs', 'game/README.md',
   'profile/README.md', 'profile/assets/header-signal.svg', 'profile/assets/signal-preview.svg',
+  'profile/assets/policylens-preview.svg', 'profile/assets/filesentinel-preview.svg', 'profile/assets/repocards-preview.svg',
 ];
 
 for (const file of SITE_FILES) {
